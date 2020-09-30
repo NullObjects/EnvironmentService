@@ -1,0 +1,13 @@
+POST http://localhost:8080/snippets
+Content-Type: application/json
+
+{
+  "snippets": [
+    {
+      "text": "mySnippet0"
+    },
+    {
+      "text": "mySnippet1"
+    }
+  ]
+}
