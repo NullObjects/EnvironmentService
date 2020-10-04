@@ -8,10 +8,8 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-
-data class Snippet(val text: String)
-
-data class PostSnippet(val snippets: List<Snippet>)
+import model.PostSnippet
+import model.Snippet
 
 val snippets = mutableListOf(
     Snippet("hello"),
