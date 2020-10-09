@@ -9,8 +9,9 @@ import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.jackson.*
 import io.ktor.locations.*
-import io.ktor.response.*
 import io.ktor.routing.*
+import org.koin.dsl.module
+import org.koin.ktor.ext.Koin
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -41,14 +42,15 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
-    routing {
-        get("/") {
-            call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
-        }
-        get("/json/jackson") {
-            call.respond(mapOf("hello" to "world"))
-        }
+    val helloAppModule = module {
+        factory { HelloRepository() }
+        factory<HelloService> { HelloServiceImpl(get()) }
+    }
+    install(Koin) {
+        modules(helloAppModule)
+    }
 
+    routing {
         location()
         type()
     }

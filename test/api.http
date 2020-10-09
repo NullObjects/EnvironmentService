@@ -1,7 +1,16 @@
-GET http://10.168.1.225:8080/type/aa/edit
+GET http://localhost:8080/location/xxxx
+
+###
+GET http://localhost:8080/type/aa/edit
+
+###
+GET http://localhost:8080/type/aa/list/1
 
 ###
 
+GET http://10.168.1.225:8080/type/aa/edit
+
+###
 GET http://10.168.1.225:8080/type/aa/list/1
 
 ###
