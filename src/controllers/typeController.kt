@@ -1,11 +1,9 @@
 package com.environmentService.controllers
 
-import com.environmentService.HelloService
 import io.ktor.application.*
 import io.ktor.locations.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import org.koin.ktor.ext.inject
 
 @KtorExperimentalLocationsAPI
 @Location("/type/{name}")
@@ -19,13 +17,11 @@ data class Type(val name: String) {
 
 @KtorExperimentalLocationsAPI
 fun Route.type() {
-    val service: HelloService by inject()
-
     get<Type.Edit> {
-        call.respondText("Inside $it, ${service.sayHello()}")
+        call.respondText("Inside $it")
     }
 
     get<Type.List> {
-        call.respondText("Inside $it, ${service.sayHello()}")
+        call.respondText("Inside $it")
     }
 }

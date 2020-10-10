@@ -10,6 +10,9 @@ class HelloRepository {
 }
 
 interface HelloService {
+    /**
+     * get information
+     */
     fun sayHello(): String
 }
 
