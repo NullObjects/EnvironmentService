@@ -40,4 +40,8 @@ dependencies {
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
 
     implementation "org.koin:koin-ktor:$koin_version"
+    implementation "org.ktorm:ktorm-core:$ktorm_version"
+    implementation "org.ktorm:ktorm-support-mysql:$ktorm_version"
+    implementation "com.alibaba:druid:$druid_version"
+    implementation "mysql:mysql-connector-java:$mysql_version"
 }

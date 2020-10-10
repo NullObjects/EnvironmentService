@@ -1,7 +1,8 @@
 package com.environmentService
 
-import com.environmentService.controllers.location
-import com.environmentService.controllers.type
+import com.environmentService.controllers.*
+import com.environmentService.models.*
+import com.environmentService.utils.*
 import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -13,6 +14,8 @@ import io.ktor.routing.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.ktor.ext.Koin
+import org.ktorm.database.Database
+import org.ktorm.dsl.*
 
 /**
  * 程序入口，启动netty服务器
@@ -58,6 +61,13 @@ fun Application.module(testing: Boolean = false) {
     }
     install(Koin) {
         modules(helloAppModule)
+    }
+
+    val database = DruidUtil.getDataSource()?.let { Database.connect(it) }
+    database?.let {
+        for (row in it.from(Environments).select().limit(0, 20)) {
+            println(row[Environments.recordTime])
+        }
     }
 
     //加载Location路由

@@ -6,3 +6,6 @@ build
 *.iml
 *.ipr
 *.iws
+
+druid.properties
+ormCodeGen.json
