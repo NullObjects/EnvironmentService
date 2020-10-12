@@ -2,6 +2,7 @@ package com.environmentService
 
 import com.environmentService.controllers.*
 import com.environmentService.models.*
+import com.environmentService.models.Environments.id
 import com.environmentService.utils.*
 import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.application.*
@@ -10,12 +11,15 @@ import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.jackson.*
 import io.ktor.locations.*
+import io.ktor.response.*
 import io.ktor.routing.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.ktor.ext.Koin
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
+import org.ktorm.entity.filter
+import org.ktorm.entity.toList
 
 /**
  * 程序入口，启动netty服务器
@@ -63,15 +67,22 @@ fun Application.module(testing: Boolean = false) {
         modules(helloAppModule)
     }
 
-    val database = DruidUtil.getDataSource()?.let { Database.connect(it) }
-    database?.let {
-        for (row in it.from(Environments).select().limit(0, 20)) {
-            println(row[Environments.recordTime])
-        }
-    }
+//    DSL
+//    DruidUtil.getDataSource()?.let {
+//        for (row in Database.connect(it)
+//            .from(Environments).select().limit(0, 20)) {
+//            println(row[Environments.recordTime])
+//        }
+//    }
 
     //加载Location路由
     routing {
+        get("/") {
+            val database = DruidUtil.getDataSource()?.let { Database.connect(it).Environements }
+            database?.let {
+                call.respond(mapOf("count" to it.toList().count()))
+            } ?: call.respondText("connect failed")
+        }
         location()
         type()
     }
