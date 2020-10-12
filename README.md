@@ -18,3 +18,9 @@ initialSize=10
 maxActive=10
 maxWait=2000
 ```
+
+### 不再使用
+- ktorm 数据类需要为interface，否则无法使用实体序列api
+- 数据类为interface时，ktor返回序列化的数据对象不方便
+- ktorm操作繁琐，仅保留用于学习
+- 查看[EnvironmentApi--.NetCore](https://github.com/NullObjects/EnvironmentApi.git)

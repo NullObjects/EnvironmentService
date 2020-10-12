@@ -1,16 +1,14 @@
-GET http://localhost:8080/
+GET http://localhost:8080/environment/last
 
 ###
-GET http://localhost:8080/type/aa/edit
+GET http://localhost:8080/environment/hour
 
-###
-GET http://localhost:8080/type/aa/list/1
 
 ###
 
-GET http://10.168.1.225:8080/type/aa/edit
+GET http://10.168.1.225:8080/environment/hour
 
 ###
-GET http://10.168.1.225:8080/type/aa/list/1
+GET http://10.168.1.225:8080/environment/hour
 
 ###

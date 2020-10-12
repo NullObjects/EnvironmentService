@@ -1,4 +1,4 @@
-package com.environmentService
+package com.environmentService.models
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

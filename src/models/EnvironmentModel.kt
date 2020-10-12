@@ -8,10 +8,11 @@ import java.time.LocalDateTime
 
 interface Environment : Entity<Environment> {
     companion object : Entity.Factory<Environment>()
-    val id:Int
-    val temperature:Float
-    val humidity:Float
-    val recordTime:LocalDateTime
+
+    val id: Int
+    val temperature: Float
+    val humidity: Float
+    val recordTime: LocalDateTime
 }
 
 object Environments : Table<Environment>("Environment") {
@@ -21,4 +22,4 @@ object Environments : Table<Environment>("Environment") {
     val recordTime = datetime("RecordTime").bindTo { it.recordTime }
 }
 
-val Database.Environements get()=this.sequenceOf(Environments)
+val Database.EnvironmentDB get() = this.sequenceOf(Environments)

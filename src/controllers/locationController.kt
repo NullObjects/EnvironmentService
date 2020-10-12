@@ -1,6 +1,6 @@
 package com.environmentService.controllers
 
-import com.environmentService.HelloService
+import com.environmentService.models.HelloService
 import io.ktor.application.*
 import io.ktor.locations.*
 import io.ktor.response.*
@@ -14,6 +14,8 @@ class MyLocation(val name: String, val arg1: Int = 42, val arg2: String = "defau
 
 @KtorExperimentalLocationsAPI
 fun Route.location() {
+//    val service:HelloService by inject()
+
     get<MyLocation> {
         val scope = getKoin().createScope("requestScope", named("REQUEST_SCOPE"))
         val service: HelloService = scope.get()
