@@ -1,6 +1,6 @@
 package com.environmentService.controllers
 
-import com.environmentService.models.EnvironmentDB
+import com.environmentService.models.Environment
 import com.environmentService.utils.DruidUtil
 import io.ktor.application.*
 import io.ktor.locations.*
@@ -8,17 +8,24 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import org.ktorm.database.Database
 import org.ktorm.dsl.between
-import org.ktorm.entity.*
-import java.time.*
+import org.ktorm.entity.filter
+import org.ktorm.entity.first
+import org.ktorm.entity.forEach
+import org.ktorm.entity.sortedByDescending
+import java.time.LocalDateTime
+import java.time.LocalTime
 
+/**
+ * environment路由
+ */
 @KtorExperimentalLocationsAPI
 @Location("/environment")
-class Environment() {
+class EnvironmentController() {
     @Location("/{span}")
-    data class Span(val env: Environment, val span: String = "last")
+    data class Span(val env: EnvironmentController, val span: String = "last")
 
     @Location("/{start}&&{end}")
-    data class Time(val env: Environment, val start: LocalTime, val end: LocalTime)
+    data class Time(val env: EnvironmentController, val start: LocalTime, val end: LocalTime)
 }
 
 /**
@@ -29,7 +36,7 @@ fun Route.environment() {
     /**
      * 按时间段获取数据
      */
-    get<Environment.Span> {
+    get<EnvironmentController.Span> {
         var startTime = LocalDateTime.now()
         val endTime = LocalDateTime.now()
         //根据时间段获取起始时间
@@ -40,26 +47,28 @@ fun Route.environment() {
             "month" -> endTime.minusMonths(1)
             else -> endTime
         }
-        val database = DruidUtil.getDataSource()?.let { x -> Database.connect(x).EnvironmentDB }
+        val table = DruidUtil.getDataSource()?.let { source -> Database.connect(source).Environment }
         if (startTime != endTime) {
-            database?.let { x ->
-                val env = x.filter { y -> y.recordTime.between(startTime..endTime) }
+            //起止时间不同，返回一段时间内的数据
+            table?.let { tab ->
                 val envList = mutableListOf<Map<String, Any>>()
-                env.forEach { z ->
-                    envList.add(
-                        mapOf(
-                            "id" to z.id,
-                            "temperature" to z.temperature,
-                            "humidity" to z.humidity,
-                            "recordTime" to z.recordTime.toString()
+                tab.filter { items -> items.recordTime.between(startTime..endTime) }
+                    .forEach { item ->
+                        envList.add(
+                            mapOf(
+                                "id" to item.id,
+                                "temperature" to item.temperature,
+                                "humidity" to item.humidity,
+                                "recordTime" to item.recordTime.toString()
+                            )
                         )
-                    )
-                }
+                    }
                 call.respond(envList)
-            }
+            } ?: call.respondText("get data failed")
         } else {
-            database?.let { x ->
-                val env = x.sortedByDescending { y -> y.id }.first()
+            //起止时间相同，返回最新一条数据
+            table?.let { tab ->
+                val env = tab.sortedByDescending { items -> items.id }.first()
                 call.respond(
                     mapOf(
                         "id" to env.id,
@@ -68,7 +77,7 @@ fun Route.environment() {
                         "recordTime" to env.recordTime.toString()
                     )
                 )
-            }
+            } ?: call.respondText("get data failed")
         }
 
 //    get<Environment.Time> {
