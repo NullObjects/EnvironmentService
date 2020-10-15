@@ -10,7 +10,7 @@ import org.ktorm.database.Database
 import org.ktorm.dsl.between
 import org.ktorm.entity.filter
 import org.ktorm.entity.first
-import org.ktorm.entity.forEach
+import org.ktorm.entity.map
 import org.ktorm.entity.sortedByDescending
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -21,7 +21,7 @@ import java.time.format.DateTimeParseException
  */
 @KtorExperimentalLocationsAPI
 @Location("/environment")
-class EnvironmentController() {
+class EnvironmentController {
     @Location("/{span}")
     data class Span(val env: EnvironmentController, val span: String = "last")
 
@@ -37,17 +37,18 @@ fun Route.environment() {
     /**
      * 获取最新一条数据
      * @param database 数据所在数据库
-     * @return Map<String, Any> 最新数据 或错误信息
+     * @return Map<String, Any?> 最新数据 或错误信息
      */
     fun getData(database: Database) =
         try {
-            val env = database.Environment.sortedByDescending { it.recordTime }.first()
-            mapOf(
-                "id" to env.id,
-                "temperature" to env.temperature,
-                "humidity" to env.humidity,
-                "recordTime" to env.recordTime.toString()
-            )
+            database.Environment.sortedByDescending { it.recordTime }.first()
+                .properties.mapValues {
+                    //替换时间为字符串
+                    if (it.value is LocalDateTime)
+                        it.value.toString()
+                    else
+                        it.value
+                }
         } catch (ex: Exception) {
             mapOf("getData failed" to ex.message)
         }
@@ -57,25 +58,22 @@ fun Route.environment() {
      * @param database 数据所在数据库
      * @param startTime 开始时间
      * @param endTime 结束时间
-     * @return MutableList<Map<String, Any>> 一段时间内数据列表 或错误信息
+     * @return List<Map<String, Any?>> 一段时间内数据列表 或错误信息
      */
     fun getData(database: Database, startTime: LocalDateTime, endTime: LocalDateTime) =
         try {
-            val envList = mutableListOf<Map<String, Any>>()
             database.Environment.filter { it.recordTime.between(startTime..endTime) }
-                .forEach {
-                    envList.add(
-                        mapOf(
-                            "id" to it.id,
-                            "temperature" to it.temperature,
-                            "humidity" to it.humidity,
-                            "recordTime" to it.recordTime.toString()
-                        )
-                    )
+                .map {
+                    it.properties.mapValues { entry ->
+                        //替换时间为字符串
+                        if (entry.value is LocalDateTime)
+                            entry.value.toString()
+                        else
+                            entry.value
+                    }
                 }
-            envList
         } catch (ex: Exception) {
-            mutableListOf(mapOf("getData failed" to ex.message))
+            listOf(mapOf("getData failed" to ex.message))
         }
 
     /**
