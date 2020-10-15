@@ -31,4 +31,7 @@ object Environments : Table<EnvironmentModel>("Environment") {
     val recordTime = datetime("RecordTime").bindTo { it.recordTime }
 }
 
+/**
+ * Database扩展属性(表)
+ */
 val Database.Environment get() = this.sequenceOf(Environments)

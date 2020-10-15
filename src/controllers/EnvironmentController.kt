@@ -13,6 +13,8 @@ import org.ktorm.entity.first
 import org.ktorm.entity.forEach
 import org.ktorm.entity.sortedByDescending
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 /**
  * environment路由
@@ -23,9 +25,8 @@ class EnvironmentController() {
     @Location("/{span}")
     data class Span(val env: EnvironmentController, val span: String = "last")
 
-    //TODO: 接收参数LocalDateTime出现问题，计划修改为接收string类型参数
     @Location("/{start}/{end}")
-    data class Time(val env: EnvironmentController, val start: LocalDateTime, val end: LocalDateTime)
+    data class Time(val env: EnvironmentController, val start: String, val end: String)
 }
 
 /**
@@ -35,10 +36,12 @@ class EnvironmentController() {
 fun Route.environment() {
     /**
      * 获取最新一条数据
+     * @param database 数据所在数据库
+     * @return Map<String, Any> 最新数据 或错误信息
      */
     fun getData(database: Database) =
         try {
-            val env = database.Environment.sortedByDescending { it.id }.first()
+            val env = database.Environment.sortedByDescending { it.recordTime }.first()
             mapOf(
                 "id" to env.id,
                 "temperature" to env.temperature,
@@ -51,6 +54,10 @@ fun Route.environment() {
 
     /**
      * 获取一段时间内数据
+     * @param database 数据所在数据库
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return MutableList<Map<String, Any>> 一段时间内数据列表 或错误信息
      */
     fun getData(database: Database, startTime: LocalDateTime, endTime: LocalDateTime) =
         try {
@@ -86,26 +93,30 @@ fun Route.environment() {
         }
 
         val database = DruidUtil.getDataSource()?.let { source -> Database.connect(source) }
-        if (database == null)
-            call.respondText("connect failed")
-        else {
+        database?.let {
             //根据时间选择获取数据
             if (startTime == endTime)
                 call.respond(getData(database))
             else
                 call.respond(getData(database, startTime, endTime))
-        }
+        } ?: call.respondText("Connect failed")
     }
 
     /**
      * 按起止时间获取数据
      */
     get<EnvironmentController.Time> {
-        //TODO:路由接收参数由LocalDateTime转为String后，需添加it.start和it.end的转换
-        val database = DruidUtil.getDataSource()?.let { source -> Database.connect(source) }
-        if (database == null)
-            call.respondText("connect failed")
-        else
-            call.respond(getData(database, it.start, it.end))
+        try {
+            val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+            val startTime = LocalDateTime.parse(it.start, dateTimeFormatter)
+            val endTime = LocalDateTime.parse(it.end, dateTimeFormatter)
+
+            val database = DruidUtil.getDataSource()?.let { source -> Database.connect(source) }
+            database
+                ?.let { call.respond(getData(database, startTime, endTime)) }
+                ?: call.respondText("Connect failed")
+        } catch (ex: DateTimeParseException) {
+            call.respondText("DateTimeParse failed")
+        }
     }
 }

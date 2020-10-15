@@ -27,6 +27,7 @@ object DruidUtil {
 
     /**
      * 从连接池获取连接
+     * @return datasource 数据源
      */
     fun getDataSource(): DataSource? {
         return dataSource

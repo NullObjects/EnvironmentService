@@ -10,11 +10,11 @@
 ```properties
 # resources路径下druid.properties
 # 数据库连接参数
-url=jdbc:mysql://[ip]:[port]/[DBName]
+url=jdbc:mysql://[ip]:[port]/[DBName]?serverTimezone=GMT%2B8&useTimezone=true
 username=***
 password=***
 # 连接池的参数
-initialSize=10
+initialSize=5
 maxActive=10
 maxWait=2000
 ```
