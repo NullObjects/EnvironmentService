@@ -1,14 +1,10 @@
+GET http://localhost:8080/device/hours
+
+###
+GET http://localhost:8080/device/2020-10-16 09:00:00/2020-10-16 23:59:59
+
+###
 GET http://localhost:8080/environment/hours
 
 ###
-GET http://localhost:8080/environment/2020-10-15 09:00:00/2020-10-15 23:59:59
-
-
-###
-
-GET http://10.168.1.225:8080/environment/hour
-
-###
-GET http://10.168.1.225:8080/environment/hour
-
-###
+GET http://localhost:8080/environment/2020-10-16 09:00:00/2020-10-16 23:59:59

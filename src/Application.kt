@@ -1,7 +1,8 @@
 package com.environmentService
 
-import com.environmentService.controllers.*
-import com.environmentService.models.*
+import com.environmentService.controllers.device
+import com.environmentService.controllers.environment
+import com.environmentService.models.HelloRepository
 import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -62,6 +63,7 @@ fun Application.module(testing: Boolean = false) {
 
     //加载Location路由
     routing {
+        device()
         environment()
     }
 }
