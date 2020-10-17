@@ -64,6 +64,7 @@ fun Route.data() {
                     }
             }
         } catch (ex: Exception) {
+            println("WARN:>>>$ex")
             mapOf("getData failed" to ex.message)
         }
 
@@ -100,6 +101,7 @@ fun Route.data() {
                     }
             }
         } catch (ex: Exception) {
+            println("WARN:>>>$ex")
             listOf(mapOf("getData failed" to ex.message))
         }
 
@@ -119,7 +121,7 @@ fun Route.data() {
                 DataOptEnum.MONTH -> endTime.minusMonths(1)
             }
         } catch (ex: IllegalArgumentException) {
-            println("Info: TimeSpan does not meet specifications, return the latest data")
+            println("WARN:>>>$ex")
         }
 
         val database = DruidUtil.getDataSource()?.let { source -> Database.connect(source) }
@@ -147,6 +149,7 @@ fun Route.data() {
                     call.respond(getData(db, it.parentRoute.dataClass, startTime, endTime))
                 } ?: call.respondText("Connect failed")
         } catch (ex: DateTimeParseException) {
+            println("WARN:>>>$ex")
             call.respondText("DateTimeParse failed")
         }
     }

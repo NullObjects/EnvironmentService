@@ -2,9 +2,3 @@ GET http://localhost:8080/data/Device/hours
 
 ###
 GET http://localhost:8080/data/Device/2020-10-16 09:00:00/2020-10-16 23:59:59
-
-###
-GET http://localhost:8080/data/Environment/hours
-
-###
-GET http://localhost:8080/data/Environment/2020-10-16 09:00:00/2020-10-16 23:59:59
