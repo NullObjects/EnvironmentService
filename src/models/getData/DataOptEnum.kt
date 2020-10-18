@@ -1,4 +1,4 @@
-package com.environmentService.models
+package com.environmentService.models.getData
 
 enum class DataOptEnum {
     LATEST,

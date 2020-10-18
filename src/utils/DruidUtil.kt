@@ -4,10 +4,18 @@ import com.alibaba.druid.pool.DruidDataSourceFactory
 import java.util.*
 import javax.sql.DataSource
 
+interface IDruid {
+    /**
+     * 从连接池获取连接
+     * @return datasource 数据源
+     */
+    fun getDataSource(): DataSource?
+}
+
 /**
  * Ali Druid连接池工具类
  */
-object DruidUtil {
+class DruidUtil : IDruid {
     private var dataSource: DataSource? = null
 
     init {
@@ -25,11 +33,7 @@ object DruidUtil {
         }
     }
 
-    /**
-     * 从连接池获取连接
-     * @return datasource 数据源
-     */
-    fun getDataSource(): DataSource? {
+    override fun getDataSource(): DataSource? {
         return dataSource
     }
 }

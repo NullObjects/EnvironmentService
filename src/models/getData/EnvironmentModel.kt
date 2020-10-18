@@ -1,4 +1,4 @@
-package com.environmentService.models
+package com.environmentService.models.getData
 
 import org.ktorm.database.Database
 import org.ktorm.entity.Entity

@@ -1,7 +1,10 @@
 package com.environmentService
 
 import com.environmentService.controllers.data
-import com.environmentService.models.HelloRepository
+import com.environmentService.models.getData.GetDataService
+import com.environmentService.models.getData.IGetData
+import com.environmentService.utils.DruidUtil
+import com.environmentService.utils.IDruid
 import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -51,13 +54,14 @@ fun Application.module(testing: Boolean = false) {
     }
 
     //安装使用Koin 依赖注入
-    val helloAppModule = module {
+    val appModule = module {
+        single<IDruid> { DruidUtil() }
         scope(named("REQUEST_SCOPE")) {
-            scoped { HelloRepository() }
+            scoped<IGetData> { GetDataService(get<IDruid>()) }
         }
     }
     install(Koin) {
-        modules(helloAppModule)
+        modules(appModule)
     }
 
     //加载Location路由
