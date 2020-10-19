@@ -1,7 +1,7 @@
 package com.environmentService.controllers
 
+import com.environmentService.controllers.getData.IGetData
 import com.environmentService.models.getData.DataOptEnum
-import com.environmentService.models.getData.IGetData
 import io.ktor.application.*
 import io.ktor.locations.*
 import io.ktor.response.*

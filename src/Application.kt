@@ -1,10 +1,10 @@
 package com.environmentService
 
 import com.environmentService.controllers.data
-import com.environmentService.models.getData.GetDataService
-import com.environmentService.models.getData.IGetData
-import com.environmentService.utils.DruidUtil
-import com.environmentService.utils.IDruid
+import com.environmentService.controllers.getData.GetDataService
+import com.environmentService.controllers.getData.IGetData
+import com.environmentService.utils.druid.DruidUtil
+import com.environmentService.utils.druid.IDruid
 import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.application.*
 import io.ktor.auth.*

@@ -1,21 +1,14 @@
-package com.environmentService.utils
+package com.environmentService.utils.druid
 
 import com.alibaba.druid.pool.DruidDataSourceFactory
 import java.util.*
 import javax.sql.DataSource
 
-interface IDruid {
-    /**
-     * 从连接池获取连接
-     * @return datasource 数据源
-     */
-    fun getDataSource(): DataSource?
-}
-
 /**
  * Ali Druid连接池工具类
  */
 class DruidUtil : IDruid {
+    override var exception: Exception? = null
     private var dataSource: DataSource? = null
 
     init {
@@ -29,6 +22,7 @@ class DruidUtil : IDruid {
             //druid底层是使用的工厂设计模式，去加载配置文件，创建DruidDataSource对象
             dataSource = DruidDataSourceFactory.createDataSource(properties)
         } catch (ex:Exception) {
+            exception = ex
             ex.printStackTrace()
         }
     }
