@@ -1,6 +1,8 @@
 package com.environmentService.controllers.getData
 
-import com.environmentService.models.getData.*
+import com.environmentService.models.getData.DataClassEnum
+import com.environmentService.models.getData.Device
+import com.environmentService.models.getData.Environment
 import com.environmentService.utils.druid.IDruid
 import org.ktorm.database.Database
 import org.ktorm.dsl.between
@@ -12,13 +14,19 @@ import java.time.LocalDateTime
 
 class GetDataService(druid: IDruid) : IGetData {
     private val database = druid.getDataSource()
-        ?.let { Database.connect(it) }
+        ?.let {
+            try {
+                Database.connect(it)
+            } catch (ex: Exception) {
+                null
+            }
+        }
 
     override fun getData(dataClass: String) =
         try {
             database ?: throw Exception("Connect failed")
             when (DataClassEnum.valueOf(dataClass.toUpperCase())) {
-                DataClassEnum.ENVIRONMENT -> database.Environment.sortedByDescending { Environments.recordTime }.first()
+                DataClassEnum.ENVIRONMENT -> database.Environment.sortedByDescending { it.recordTime }.first()
                     .properties.mapValues {
                         //替换时间为字符串
                         if (it.value is LocalDateTime)
@@ -26,7 +34,7 @@ class GetDataService(druid: IDruid) : IGetData {
                         else
                             it.value
                     }
-                DataClassEnum.DEVICE -> database.Device.sortedByDescending { Devices.recordTime }.first()
+                DataClassEnum.DEVICE -> database.Device.sortedByDescending { it.recordTime }.first()
                     .properties.mapValues {
                         //替换时间为字符串
                         if (it.value is LocalDateTime)
@@ -44,7 +52,7 @@ class GetDataService(druid: IDruid) : IGetData {
         try {
             database ?: throw Exception("Connect failed")
             when (DataClassEnum.valueOf(dataClass.toUpperCase())) {
-                DataClassEnum.ENVIRONMENT -> database.Environment.filter { Environments.recordTime.between(startTime..endTime) }
+                DataClassEnum.ENVIRONMENT -> database.Environment.filter { it.recordTime.between(startTime..endTime) }
                     .map {
                         it.properties.mapValues { entry ->
                             //替换时间为字符串
@@ -54,7 +62,7 @@ class GetDataService(druid: IDruid) : IGetData {
                                 entry.value
                         }
                     }
-                DataClassEnum.DEVICE -> database.Device.filter { Devices.recordTime.between(startTime..endTime) }
+                DataClassEnum.DEVICE -> database.Device.filter { it.recordTime.between(startTime..endTime) }
                     .map {
                         it.properties.mapValues { entry ->
                             //替换时间为字符串

@@ -57,7 +57,7 @@ fun Application.module(testing: Boolean = false) {
     val appModule = module {
         single<IDruid> { DruidUtil() }
         scope(named("REQUEST_SCOPE")) {
-            scoped<IGetData> { GetDataService(get<IDruid>()) }
+            scoped<IGetData> { GetDataService(get()) }
         }
     }
     install(Koin) {
