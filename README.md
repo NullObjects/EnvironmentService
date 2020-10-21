@@ -1,4 +1,5 @@
 # Environment
+- [查看.NETCore版](https://github.com/NullObjects/EnvironmentApi)
 
 ### 框架
 - Ktor Web框架
