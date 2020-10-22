@@ -13,6 +13,9 @@ import org.ktorm.entity.sortedByDescending
 import java.time.LocalDateTime
 
 class GetDataService(druid: IDruid) : IGetData {
+    /**
+     * 数据库连接
+     */
     private val database = druid.getDataSource()
         ?.let {
             try {
@@ -26,6 +29,7 @@ class GetDataService(druid: IDruid) : IGetData {
         try {
             database ?: throw Exception("Connect failed")
             when (DataClassEnum.valueOf(dataClass.toUpperCase())) {
+                //获取不同类型信息
                 DataClassEnum.ENVIRONMENT -> database.Environment.sortedByDescending { it.recordTime }.first()
                     .properties.mapValues {
                         //替换时间为字符串
@@ -52,6 +56,7 @@ class GetDataService(druid: IDruid) : IGetData {
         try {
             database ?: throw Exception("Connect failed")
             when (DataClassEnum.valueOf(dataClass.toUpperCase())) {
+                //获取不同类型信息
                 DataClassEnum.ENVIRONMENT -> database.Environment.filter { it.recordTime.between(startTime..endTime) }
                     .map {
                         it.properties.mapValues { entry ->

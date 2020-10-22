@@ -36,8 +36,8 @@ fun Route.data() {
     get<GetDataController.Span> {
         val endTime = LocalDateTime.now()
         var startTime = endTime
-        //根据时间段获取起始时间
         try {
+            //根据时间段获取起始时间
             startTime = when (DataOptEnum.valueOf(it.span.toUpperCase())) {
                 DataOptEnum.LATEST -> endTime
                 DataOptEnum.HOUR -> endTime.minusHours(1)
