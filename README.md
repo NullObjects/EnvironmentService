@@ -8,8 +8,8 @@
 - Druid(Ali) 数据库连接池
 
 ### 配置文件
+- resources路径下druid.properties
 ```properties
-# resources路径下druid.properties
 # 数据库连接参数
 url=jdbc:mysql://[ip]:[port]/[DBName]?serverTimezone=GMT%2B8&useTimezone=true
 username=***
